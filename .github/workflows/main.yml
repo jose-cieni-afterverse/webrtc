@@ -20,14 +20,14 @@ jobs:
       - run: echo "$PWD/depot_tools" >> $GITHUB_PATH
       # - run: src/.github/bin/setup.sh
       - run: |
-        set -eux
-        mkdir depot_tools
-        cd depot_tools
-        git init
-        git fetch --depth=1 https://chromium.googlesource.com/chromium/tools/depot_tools.git 624bf6e42543d2b381410baabcb80c0c4d3072b3
-        git checkout FETCH_HEAD
-        cd ..
-        gclient config --name=src --unmanaged "https://github.com/$GITHUB_REPOSITORY.git"
+          set -eux
+          mkdir depot_tools
+          cd depot_tools
+          git init
+          git fetch --depth=1 https://chromium.googlesource.com/chromium/tools/depot_tools.git 624bf6e42543d2b381410baabcb80c0c4d3072b3
+          git checkout FETCH_HEAD
+          cd ..
+          gclient config --name=src --unmanaged "https://github.com/$GITHUB_REPOSITORY.git"
       - run: git -C depot_tools fetch https://chromium.googlesource.com/chromium/tools/depot_tools.git 6a1d77869d77b61189247ce8b47ac9d86684a6c2
       - run: git -C depot_tools cherry-pick FETCH_HEAD
       - run: gclient sync --deps=ios,mac --no-history --shallow
