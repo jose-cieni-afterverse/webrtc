@@ -1,0 +1,37 @@
+# Copyright 2020 pixiv Inc. All Rights Reserved.
+#
+# Use of this source code is governed by a license that can be
+# found in the LICENSE.pixiv file in the root of the source tree.
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  ios:
+    runs-on: macos-11
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: src
+      # - run: sudo xcode-select -s /Applications/Xcode_11.7.app/Contents/Developer
+      - run: sudo xcode-select -s /Applications/Xcode_13.2.1.app/Contents/Developer
+      - run: echo "$PWD/depot_tools" >> $GITHUB_PATH
+      - run: src/.github/bin/setup.sh
+      - run: git -C depot_tools fetch https://chromium.googlesource.com/chromium/tools/depot_tools.git 6a1d77869d77b61189247ce8b47ac9d86684a6c2
+      - run: git -C depot_tools cherry-pick FETCH_HEAD
+      - run: gclient sync --deps=ios,mac --no-history --shallow
+
+      - run: src/tools_webrtc/ios/build_ios_libs.py --arch arm64 x64 --bitcode --extra-gn-args rtc_build_examples=false rtc_enable_symbol_export=true
+
+      - run: zip -q -r --symlinks WebRTC.framework.zip WebRTC.framework
+        working-directory: src/out_ios_libs
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ios
+          path: src/out_ios_libs/WebRTC.framework.zip
+
+#use_rtti = true
+#libcxx_abi_unstable = false
