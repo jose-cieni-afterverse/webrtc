@@ -33,14 +33,16 @@ jobs:
       - run: gclient sync --deps=ios,mac --no-history --shallow
 
       - run: src/tools_webrtc/ios/build_ios_libs.py --arch arm64 x64 --bitcode --extra-gn-args rtc_build_examples=false rtc_enable_symbol_export=true
-
-      - run: zip -q -r --symlinks WebRTC.framework.zip WebRTC.framework
-        working-directory: src/out_ios_libs
+      
+      - run: find .
+#       - run: zip -q -r --symlinks WebRTC.framework.zip WebRTC.framework
+#         working-directory: src/out_ios_libs
 
       - uses: actions/upload-artifact@v2
         with:
           name: ios
-          path: src/out_ios_libs/WebRTC.framework.zip
+          path: src/out_ios_libs
+#           path: src/out_ios_libs/WebRTC.framework.zip
 
 #use_rtti = true
 #libcxx_abi_unstable = false
